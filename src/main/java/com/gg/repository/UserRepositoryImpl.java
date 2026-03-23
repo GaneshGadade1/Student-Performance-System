@@ -5,16 +5,19 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class UserRepositoryImpl implements IUserRepository {
+public class UserRepositoryImpl implements IUserRepository 
+{
 
     private final JdbcTemplate jdbcTemplate;
 
-    public UserRepositoryImpl(JdbcTemplate jdbcTemplate) {
+    public UserRepositoryImpl(JdbcTemplate jdbcTemplate) 
+    {
         this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
-    public void save(User user) {
+    public void save(User user) 
+    {
 
         String sql = "INSERT INTO users(username,password,role) VALUES(?,?,?)";
 
@@ -27,7 +30,8 @@ public class UserRepositoryImpl implements IUserRepository {
     }
 
     @Override
-    public void saveUser(String email, String password, String role) {
+    public void saveUser(String email, String password, String role) 
+    {
 
         String sql = "INSERT INTO users(username,password,role) VALUES(?,?,?)";
 
@@ -35,7 +39,8 @@ public class UserRepositoryImpl implements IUserRepository {
     }
 
     @Override
-    public Integer findUserIdByUsername(String email) {
+    public Integer findUserIdByUsername(String email) 
+    {
 
         String sql = "SELECT id FROM users WHERE username=?";
 
@@ -43,7 +48,8 @@ public class UserRepositoryImpl implements IUserRepository {
     }
 
     @Override
-    public void saveStudent(Integer userId, String name, String email, String course) {
+    public void saveStudent(Integer userId, String name, String email, String course) 
+    {
 
         String sql = "INSERT INTO students(user_id,student_name,student_email,student_course) VALUES(?,?,?,?)";
 
@@ -51,11 +57,13 @@ public class UserRepositoryImpl implements IUserRepository {
     }
 
     @Override
-    public User findByUsername(String username) {
+    public User findByUsername(String username) 
+    {
 
         String sql = "SELECT * FROM users WHERE username=?";
 
-        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
+        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> 
+        {
 
             User user = new User();
 

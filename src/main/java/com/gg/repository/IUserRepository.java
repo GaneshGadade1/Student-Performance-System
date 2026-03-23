@@ -3,7 +3,8 @@ package com.gg.repository;
 import com.gg.model.Student;
 import com.gg.model.User;
 
-public interface IUserRepository {
+public interface IUserRepository 
+{
 
     void save(User user);
 

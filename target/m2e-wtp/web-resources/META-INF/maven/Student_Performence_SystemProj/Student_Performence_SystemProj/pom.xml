@@ -99,7 +99,7 @@
             <artifactId>logback-classic</artifactId>
             <version>1.5.6</version>
         </dependency>
-
+		
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
@@ -110,6 +110,18 @@
     <groupId>org.springframework.security</groupId>
     <artifactId>spring-security-taglibs</artifactId>
     <version>${spring.security.version}</version>
+</dependency>
+
+	<dependency>
+    <groupId>com.itextpdf</groupId>
+    <artifactId>kernel</artifactId>
+    <version>7.2.5</version>
+</dependency>
+
+<dependency>
+    <groupId>com.itextpdf</groupId>
+    <artifactId>layout</artifactId>
+    <version>7.2.5</version>
 </dependency>
     </dependencies>
 

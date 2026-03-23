@@ -13,12 +13,14 @@ public class PerformanceRepositoryImpl implements IPerformanceRepository
 
 	 private final JdbcTemplate jdbcTemplate;
 
-	    public PerformanceRepositoryImpl(JdbcTemplate jdbcTemplate) {
+	    public PerformanceRepositoryImpl(JdbcTemplate jdbcTemplate) 
+	    {
 	        this.jdbcTemplate = jdbcTemplate;
 	    }
 
 	    @Override
-	    public void savePerformance(PerformanceRecord r) {
+	    public void savePerformance(PerformanceRecord r) 
+	    {
 
 	        String sql = """
 	                INSERT INTO performance_records
@@ -37,7 +39,8 @@ public class PerformanceRepositoryImpl implements IPerformanceRepository
 	    }
 
 	    @Override
-	    public List<PerformanceRecord> getByStudentId(int studentId) {
+	    public List<PerformanceRecord> getByStudentId(int studentId)
+	    {
 
 	    	String sql = """
 	    			SELECT p.*, s.student_name
@@ -46,7 +49,8 @@ public class PerformanceRepositoryImpl implements IPerformanceRepository
 	    			WHERE p.student_id = ?
 	    			""";
 
-	    	return jdbcTemplate.query(sql, (rs, rowNum) -> {
+	    	return jdbcTemplate.query(sql, (rs, rowNum) -> 
+	    	{
 
 	    	    PerformanceRecord r = new PerformanceRecord();
 
@@ -76,7 +80,8 @@ public class PerformanceRepositoryImpl implements IPerformanceRepository
 	            LIMIT ? OFFSET ?
 	            """;
 
-	        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+	        return jdbcTemplate.query(sql, (rs, rowNum) -> 
+	        {
 
 	            PerformanceRecord r = new PerformanceRecord();
 
@@ -109,10 +114,10 @@ public class PerformanceRepositoryImpl implements IPerformanceRepository
 		        SELECT p.*, s.student_name
 		        FROM performance_records p
 		        JOIN students s ON p.student_id = s.student_id
-		        WHERE s.user_id = (
-		            SELECT id FROM users WHERE username = ?
-		        )
-		        """;
+		        JOIN users u ON s.user_id = u.id
+		        WHERE u.username = ?
+		        ORDER BY p.record_id DESC
+		    """;
 
 		    return jdbcTemplate.query(sql, (rs, rowNum) -> {
 
@@ -135,7 +140,8 @@ public class PerformanceRepositoryImpl implements IPerformanceRepository
 		
 
 		@Override
-		public List<PerformanceRecord> getAllRecords(int limit, int offset) {
+		public List<PerformanceRecord> getAllRecords(int limit, int offset)
+		{
 
 		    String sql = """
 		    SELECT p.*, s.student_name

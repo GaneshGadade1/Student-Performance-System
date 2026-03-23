@@ -25,24 +25,41 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-            .csrf(csrf -> csrf.disable())
+            // ❗ DO NOT use .enable() → CSRF is already enabled by default
+            .csrf(csrf -> {})  
 
             .authorizeHttpRequests(auth -> auth
-            		.requestMatchers("/", "/login", "/register", "/registerStudent").permitAll()
-                    .requestMatchers("/admin/**").hasRole("ADMIN")
-                    .requestMatchers("/student/**").hasRole("STUDENT")
-                    .anyRequest().authenticated()
+
+                // ✅ Public pages
+                .requestMatchers(
+                        "/", 
+                        "/login", 
+                        "/register", 
+                        "/registerStudent",
+                        "/about",
+                        "/contact"
+                ).permitAll()
+
+                // ✅ Static resources (VERY IMPORTANT for video)
+                .requestMatchers("/resources/**").permitAll()
+
+                // ✅ Role-based access
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/student/**").hasRole("STUDENT")
+
+                .anyRequest().authenticated()
             )
 
             .formLogin(form -> form
                     .loginPage("/login")
                     .loginProcessingUrl("/login")
+
+                    // ✅ Role-based redirect
                     .successHandler((request, response, authentication) -> {
-
                         String redirectUrl = determineTargetUrl(authentication);
-
                         response.sendRedirect(request.getContextPath() + redirectUrl);
                     })
+
                     .failureUrl("/login?error")
                     .permitAll()
             )
@@ -50,6 +67,8 @@ public class SecurityConfig {
             .logout(logout -> logout
                     .logoutUrl("/logout")
                     .logoutSuccessUrl("/login?logout")
+                    .invalidateHttpSession(true)
+                    .deleteCookies("JSESSIONID")
                     .permitAll()
             )
 
@@ -58,7 +77,7 @@ public class SecurityConfig {
         return http.build();
     }
 
-    //  Separate method for cleaner role handling
+    // ✅ Role-based redirect
     private String determineTargetUrl(Authentication authentication) {
 
         boolean isAdmin = authentication.getAuthorities().stream()
@@ -75,18 +94,21 @@ public class SecurityConfig {
             return "/student/dashboard";
         }
 
-        // fallback
         return "/login?error";
     }
 
+    // ✅ Authentication provider
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
+
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
+
         return provider;
     }
 
+    // ✅ Password encoder
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

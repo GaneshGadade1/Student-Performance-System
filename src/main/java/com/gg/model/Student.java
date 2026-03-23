@@ -11,11 +11,11 @@ public class Student {
     private LocalDateTime createdAt;
     private int UserId;
 
-    // 🔹 Default Constructor
+    // Default Constructor
     public Student() {
     }
 
-    // 🔹 Parameterized Constructor
+    // Parameterized Constructor
     public Student(int id, String name, String email, String course, LocalDateTime createdAt) {
         this.id = id;
         this.name = name;
@@ -78,7 +78,7 @@ public class Student {
         this.createdAt = createdAt;
     }
 
-    // 🔹 toString Method (For Debugging)
+    //  toString Method (For Debugging)
 
     @Override
     public String toString() {

@@ -1,175 +1,139 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Student Dashboard</title>
+<%@ page contentType="text/html;charset=UTF-8" %>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
 
-</head>
+/* wrapper */
+#pageWrapper {
+    transition: margin-left 0.3s;
+}
 
-<body>
+/* video */
+#bgVideo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+}
 
-<nav class="navbar navbar-dark bg-primary">
-<div class="container-fluid">
+/* overlay */
+.overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.65);
+    z-index: -1;
+}
 
-<span class="navbar-brand">Student Dashboard</span>
+/* content */
+.main-content {
+    text-align: center;
+    margin-top: 100px;
+    color: white;
+}
 
-<span class="text-white">
-Welcome ${pageContext.request.userPrincipal.name}
-</span>
+/* animation */
+.fade-in {
+    animation: fadeIn 1s ease-in;
+}
 
-<a href="${pageContext.request.contextPath}/logout" class="btn btn-danger btn-sm">Logout</a>
+@keyframes fadeIn {
+    from {opacity:0; transform:translateY(20px);}
+    to {opacity:1; transform:translateY(0);}
+}
 
-</div>
-</nav>
+/* menu button */
+.menu-btn {
+    position: fixed;
+    top: 70px;
+    left: 15px;
+    z-index: 1000;
+    transition: 0.3s;
+}
 
-<div class="container mt-4">
+/* glass card */
+.glass-card {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(12px);
+    border-radius: 12px;
+}
+</style>
 
-<div class="row">
+<div id="pageWrapper">
 
-<!-- PERFORMANCE -->
-<div class="col-md-4">
+<jsp:include page="common/navbar.jsp"/>
+<jsp:include page="common/student-sidebar.jsp"/>
 
-<div class="card shadow">
-<div class="card-body text-center">
+<!-- VIDEO -->
+<video autoplay muted loop id="bgVideo">
+<source src="${pageContext.request.contextPath}/resources/video/bg.mp4">
+</video>
 
-<h5 class="card-title">My Performance</h5>
-<p>Check your academic prediction</p>
+<div class="overlay"></div>
+
+<button onclick="toggleSidebar()" class="btn btn-dark menu-btn">☰</button>
+
+<div class="main-content fade-in">
+
+<h1>Student Dashboard</h1>
+
+<div class="d-flex justify-content-center gap-3 mt-3">
 
 <a href="${pageContext.request.contextPath}/student/performance"
-class="btn btn-primary">
-View
-</a>
+class="btn btn-primary btn-lg shadow">Performance</a>
+
+<a href="${pageContext.request.contextPath}/student/teachers"
+class="btn btn-warning btn-lg shadow">Teachers</a>
 
 </div>
+
+<!-- ✅ ONLY CHART (NO CARDS NOW) -->
+<div class="container mt-5" style="max-width:800px;">
+    <div class="glass-card p-4 shadow">
+        <h4 class="text-white mb-3">Performance Analytics</h4>
+        <canvas id="performanceChart"></canvas>
+    </div>
 </div>
-
-</div>
-
-
-<!-- UPDATE PROFILE -->
-<div class="col-md-4">
-
-<div class="card shadow">
-<div class="card-body text-center">
-
-<h5 class="card-title">Update Profile</h5>
-<p>Update your details</p>
-
-<button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#updateModal">
-Update Profile
-</button>
 
 </div>
 </div>
 
-</div>
+<!-- ✅ Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-
-<!-- VIEW PROFILE -->
-<div class="col-md-4">
-
-<div class="card shadow">
-<div class="card-body text-center">
-
-<h5 class="card-title">View Profile</h5>
-<p>See your personal information</p>
-
-<a href="${pageContext.request.contextPath}/student/viewProfile"
-class="btn btn-info">
-View Profile
-</a>
-
-</div>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- UPDATE PROFILE MODAL -->
-
-<div class="modal fade" id="updateModal">
-
-<div class="modal-dialog">
-
-<div class="modal-content">
-
-<div class="modal-header">
-<h5 class="modal-title">Update Profile</h5>
-<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-</div>
-
-<div class="modal-body">
-
-<form id="updateForm">
-
-<div class="mb-3">
-<label>Name</label>
-<input type="text" id="name" class="form-control">
-</div>
-
-<div class="mb-3">
-<label>Course</label>
-<input type="text" id="course" class="form-control">
-</div>
-
-<div class="mb-3">
-<label>Email</label>
-<input type="text" id="email" class="form-control">
-</div>
-
-<div class="mb-3">
-<label>Password</label>
-<input type="password" id="password" class="form-control">
-</div>
-
-<button type="submit" class="btn btn-success w-100">Update</button>
-
-</form>
-
-<div id="msg" class="mt-3 text-success"></div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
+<!-- ✅ Dynamic Chart from DB -->
 <script>
+fetch("${pageContext.request.contextPath}/student/chart-data")
+.then(res => res.json())
+.then(data => {
 
-document.getElementById("updateForm").addEventListener("submit", function(e){
+new Chart(document.getElementById('performanceChart'), {
+    type: 'bar',
+    data: {
+        labels: ['Attendance', 'Study Hours', 'Previous Marks', 'Predicted'],
+        datasets: [{
+            label: 'Your Performance',
+            data: [
+                data.attendance,
+                data.study,
+                data.previous,
+                data.predicted
+            ],
+            borderWidth: 2
+        }]
+    },
+    options: {
+        responsive: true
+    }
+});
 
-e.preventDefault();
-
-const data = new URLSearchParams();
-
-data.append("name", document.getElementById("name").value);
-data.append("course", document.getElementById("course").value);
-data.append("email", document.getElementById("email").value);
-data.append("password", document.getElementById("password").value);
-
-fetch("${pageContext.request.contextPath}/student/updateProfile",
-{
-method:"POST",
-body:data
 })
-.then(res=>res.text())
-.then(msg=>{
-document.getElementById("msg").innerHTML = msg;
-});
-
-});
-
+.catch(err => console.log("Chart Error:", err));
 </script>
-
-</body>
-</html>

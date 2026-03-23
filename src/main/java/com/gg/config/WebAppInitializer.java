@@ -10,13 +10,13 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRegistration;
 import jakarta.servlet.FilterRegistration;
 
-public class WebAppInitializer implements WebApplicationInitializer {
+public class WebAppInitializer implements WebApplicationInitializer 
+{
 
     @Override
-    public void onStartup(ServletContext servletContext) throws ServletException {
-
-        AnnotationConfigWebApplicationContext context =
-                new AnnotationConfigWebApplicationContext();
+    public void onStartup(ServletContext servletContext) throws ServletException 
+    {
+        AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
 
         context.register(
                 WebMvcConfig.class,
@@ -27,17 +27,15 @@ public class WebAppInitializer implements WebApplicationInitializer {
         DispatcherServlet dispatcherServlet =
                 new DispatcherServlet(context);
 
-        ServletRegistration.Dynamic servlet =
-                servletContext.addServlet("dispatcher", dispatcherServlet);
+        ServletRegistration.Dynamic servlet = servletContext.addServlet("dispatcher", dispatcherServlet);
 
         servlet.setLoadOnStartup(1);
         servlet.addMapping("/");
 
-        // 🔥 VERY IMPORTANT FOR SECURITY
+        // VERY IMPORTANT FOR SECURITY
         FilterRegistration.Dynamic securityFilter =
-                servletContext.addFilter("springSecurityFilterChain",
-                        new DelegatingFilterProxy("springSecurityFilterChain"));
+            servletContext.addFilter("springSecurityFilterChain", new DelegatingFilterProxy("springSecurityFilterChain"));
 
         securityFilter.addMappingForUrlPatterns(null, false, "/*");
     }
-}
+}       

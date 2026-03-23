@@ -7,14 +7,22 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = "com.gg")
-public class WebMvcConfig implements WebMvcConfigurer {
-
+public class WebMvcConfig implements WebMvcConfigurer 
+{
     @Bean
-    public InternalResourceViewResolver viewResolver() {
-        InternalResourceViewResolver resolver =
-                new InternalResourceViewResolver();
+    public InternalResourceViewResolver viewResolver() 
+    {
+        InternalResourceViewResolver resolver = new InternalResourceViewResolver();
         resolver.setPrefix("/WEB-INF/views/");
         resolver.setSuffix(".jsp");
         return resolver;
+    }
+
+    // ✅ VERY IMPORTANT (for video, CSS, JS)
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) 
+    {
+        registry.addResourceHandler("/resources/**")
+                .addResourceLocations("/resources/");
     }
 }

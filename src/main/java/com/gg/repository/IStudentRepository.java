@@ -3,7 +3,8 @@ package com.gg.repository;
 import java.util.List;
 import com.gg.model.Student;
 
-public interface IStudentRepository {
+public interface IStudentRepository 
+{
 
     void saveStudent(Student student);
 

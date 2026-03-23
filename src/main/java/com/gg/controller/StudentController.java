@@ -1,7 +1,9 @@
 package com.gg.controller;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -27,7 +29,8 @@ public class StudentController
 	    }
 
     @GetMapping("/dashboard")
-    public String studentDashboard() {
+    public String studentDashboard() 
+    {
         return "student-dashboard";
     }
 
@@ -51,7 +54,8 @@ public class StudentController
     
 
     @GetMapping("/performance")
-    public String myPerformance(Model model, Authentication auth) {
+    public String myPerformance(Model model, Authentication auth) 
+    {
 
         String username = auth.getName();
 
@@ -74,5 +78,28 @@ public class StudentController
         model.addAttribute("student", student);
 
         return "viewProfile";
+    }
+    
+    @GetMapping("/chart-data")
+    @ResponseBody
+    public Map<String, Object> getChartData(Authentication auth) {
+
+        String username = auth.getName();
+
+        List<PerformanceRecord> records =
+                performanceService.getPerformanceByUsername(username);
+
+        double attendance = records.stream().mapToDouble(PerformanceRecord::getAttendance).average().orElse(0);
+        double study = records.stream().mapToDouble(PerformanceRecord::getStudyHours).average().orElse(0);
+        double previous = records.stream().mapToDouble(PerformanceRecord::getPreviousMarks).average().orElse(0);
+        double predicted = records.stream().mapToDouble(PerformanceRecord::getPredictedMarks).average().orElse(0);
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("attendance", attendance);
+        data.put("study", study);
+        data.put("previous", previous);
+        data.put("predicted", predicted);
+
+        return data;
     }
 }

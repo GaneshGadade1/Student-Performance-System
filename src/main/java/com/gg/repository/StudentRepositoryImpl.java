@@ -8,16 +8,19 @@ import org.springframework.stereotype.Repository;
 import com.gg.model.Student;
 
 @Repository
-public class StudentRepositoryImpl implements IStudentRepository {
+public class StudentRepositoryImpl implements IStudentRepository 
+{
 
     private final JdbcTemplate jdbcTemplate;
 
-    public StudentRepositoryImpl(JdbcTemplate jdbcTemplate) {
+    public StudentRepositoryImpl(JdbcTemplate jdbcTemplate) 
+    {
         this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
-    public void saveStudent(Student student) {
+    public void saveStudent(Student student) 
+    {
 
         String sql = "INSERT INTO students(student_name, student_email, student_course) VALUES (?, ?, ?)";
 
@@ -28,7 +31,8 @@ public class StudentRepositoryImpl implements IStudentRepository {
     }
 
     @Override
-    public void updateStudent(Student student) {
+    public void updateStudent(Student student)
+    {
 
         String sql = "UPDATE students SET student_name=?, student_email=?, student_course=? WHERE student_id=?";
 
@@ -40,7 +44,8 @@ public class StudentRepositoryImpl implements IStudentRepository {
     }
 
     @Override
-    public void deleteStudent(int id) {
+    public void deleteStudent(int id) 
+    {
 
         String sql = "DELETE FROM students WHERE student_id=?";
 
@@ -52,7 +57,8 @@ public class StudentRepositoryImpl implements IStudentRepository {
 
         String sql = "SELECT * FROM students WHERE student_id=?";
 
-        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
+        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> 
+        {
 
             Student student = new Student();
 
@@ -71,7 +77,8 @@ public class StudentRepositoryImpl implements IStudentRepository {
 
         String sql = "SELECT * FROM students";
 
-        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+        return jdbcTemplate.query(sql, (rs, rowNum) -> 
+        {
 
             Student student = new Student();
 
@@ -86,7 +93,8 @@ public class StudentRepositoryImpl implements IStudentRepository {
     }
 
     @Override
-    public Student getStudentByUsername(String username) {
+    public Student getStudentByUsername(String username) 
+    {
 
         String sql = """
                 SELECT s.*
@@ -95,7 +103,8 @@ public class StudentRepositoryImpl implements IStudentRepository {
                 WHERE u.username = ?
                 """;
 
-        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
+        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> 
+        {
 
             Student student = new Student();
 

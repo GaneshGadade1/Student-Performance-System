@@ -11,7 +11,8 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 public class DBConfig {
 
     @Bean
-    public DataSource dataSource() {
+    public DataSource dataSource() 
+    {
 
         DriverManagerDataSource ds =
                 new DriverManagerDataSource();
@@ -25,7 +26,8 @@ public class DBConfig {
     }
 
     @Bean
-    public JdbcTemplate jdbcTemplate(DataSource ds) {
+    public JdbcTemplate jdbcTemplate(DataSource ds) 
+    {
         return new JdbcTemplate(ds);
     }
 }

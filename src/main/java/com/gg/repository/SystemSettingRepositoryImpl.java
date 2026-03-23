@@ -20,7 +20,8 @@ public class SystemSettingRepositoryImpl implements ISystemSettingRepository
 	{
 		String sql = "SELECT * FROM system_settings LIMIT 1";
 
-        return jdbcTemplate.queryForObject(sql,(rs,rowNum)->{
+        return jdbcTemplate.queryForObject(sql,(rs,rowNum)->
+        {
 
             SystemSetting s = new SystemSetting();
 
@@ -52,8 +53,7 @@ public class SystemSettingRepositoryImpl implements ISystemSettingRepository
 			                s.getStudyHoursWeight(),
 			                s.getPreviousMarksWeight(),
 			                s.getIntercept(),
-			                s.getId());
-			    
+			                s.getId()); 
 	}
 
 }
